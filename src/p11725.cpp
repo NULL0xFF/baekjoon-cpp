@@ -40,9 +40,14 @@ int main(int argc, char *argv[])
 
     std::map<int, std::vector<int> *> hashMap;
 
-    
+    int n1 = 0, n2 = 0;
+    std::vector<int> * ptr = nullptr;
     for (int loop = 0; loop < numberOfVertex - 1; loop++)
     {
+        scanf("%d %d", &n1, &n2);
+        for(auto it = hashMap.begin(); it != hashMap.end(); it++)
+        if(hashMap.)
+        hashMap.insert(std::make_pair)
     }
     return 0;
 }
