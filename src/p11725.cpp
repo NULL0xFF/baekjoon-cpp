@@ -30,24 +30,30 @@
  */
 
 #include <cstdio>
-#include <map>
-#include <vector>
 
 int main(int argc, char *argv[])
 {
     int numberOfVertex = 0;
     scanf("%d", &numberOfVertex);
 
-    std::map<int, std::vector<int> *> hashMap;
+    // Initialize Array
+    int *array = new int[numberOfVertex];
+    for (int loop = 0; loop < numberOfVertex - 1; loop++)
+        array[loop] = 0;
 
     int n1 = 0, n2 = 0;
-    std::vector<int> * ptr = nullptr;
+    // Input Nodes and Vertices
     for (int loop = 0; loop < numberOfVertex - 1; loop++)
     {
         scanf("%d %d", &n1, &n2);
-        for(auto it = hashMap.begin(); it != hashMap.end(); it++)
-        if(hashMap.)
-        hashMap.insert(std::make_pair)
+        if (array[n1 - 1] == 0)
+            array[n1 - 1] = n2;
+        if (array[n2 - 1] == 0)
+            array[n2 - 1] = n1;
     }
+
+    for (int loop = 1; loop < numberOfVertex; loop++)
+        printf("%d\n", array[loop]);
+
     return 0;
 }
