@@ -30,28 +30,67 @@
  */
 
 #include <cstdio>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <stack>
 
 int main(int argc, char *argv[])
 {
     int numberOfVertex = 0;
     scanf("%d", &numberOfVertex);
 
-    // Initialize Array
+    // Create Graph
+    std::map<int, std::vector<int> *> graph;
+    for (int loop = 0; loop < numberOfVertex; loop++)
+        graph.insert(std::make_pair(loop + 1, new std::vector<int>));
+
+    // Input
+    int node[2];
+    std::vector<int> *list = nullptr;
+    for (int loop = 0; loop < numberOfVertex - 1; loop++)
+    {
+        scanf("%d %d", &node[0], &node[1]);
+        list = graph.find(node[0])->second;
+        if (std::find(list->begin(), list->end(), node[1]) == list->end())
+        {
+            list->push_back(node[1]);
+            list = graph.find(node[1])->second;
+            list->push_back(node[0]);
+        }
+        else
+        {
+            return 1; // Key not found
+        }
+    }
+
+    // DFS
     int *array = new int[numberOfVertex];
     for (int loop = 0; loop < numberOfVertex - 1; loop++)
         array[loop] = 0;
-
-    int n1 = 0, n2 = 0;
-    // Input Nodes and Vertices
-    for (int loop = 0; loop < numberOfVertex - 1; loop++)
+    std::vector<int> visited;
+    std::stack<int> stacked;
+    node[0] = 1;
+    stacked.push(node[0]);
+    while (!stacked.empty())
     {
-        scanf("%d %d", &n1, &n2);
-        if (array[n1 - 1] == 0)
-            array[n1 - 1] = n2;
-        if (array[n2 - 1] == 0)
-            array[n2 - 1] = n1;
+        node[1] = stacked.top();
+        stacked.pop();
+        if (std::find(visited.begin(), visited.end(), node[1]) == visited.end())
+        {
+            visited.push_back(node[1]);
+            list = graph.find(node[1])->second;
+            sort(list->begin(), list->end(), std::greater<int>());
+            for (int i = 0; i < (int)list->size(); i++)
+            {
+                if (array[list->at(i) - 1] == 0)
+                    array[list->at(i) - 1] = node[1];
+                stacked.push(list->at(i));
+            }
+        }
     }
 
+    // Output
     for (int loop = 1; loop < numberOfVertex; loop++)
         printf("%d\n", array[loop]);
 
