@@ -18,6 +18,8 @@
 
 #include <cstdio>
 #include <vector>
+#include <map>
+#include <utility>
 #include <algorithm>
 
 int main(int argc, char *argv[])
@@ -25,17 +27,42 @@ int main(int argc, char *argv[])
     // Variables
     int n = 0, m = 0;
     std::vector<long int> inputList;
+    std::vector<std::pair<long int, long int>> searchList;
     std::vector<long int> outputList;
 
     // Input
     scanf("%d %d", &n, &m);
 
+    // Input N
+    for (int l = 0; l < n; l++)
+    {
+        long int li = 0;
+        scanf("%ld", &li);
+        inputList.push_back(li);
+    }
+
+    // Input M
+    for (int l = 0; l < m; l++)
+    {
+        long int a, b;
+        scanf("%ld %ld", &a, &b);
+        searchList.push_back(std::pair<long int, long int>(a, b));
+    }
     // Sort
     std::sort(inputList.begin(), inputList.end());
 
     // Search
+    
 
     // Output
+
+    // Debug
+    for (int l = 0; l < n; l++)
+        printf("%ld ", inputList.at(l));
+    printf("\n");
+    for (int l = 0; l < m; l++)
+        printf("(%ld %ld) ", searchList.at(l).first, searchList.at(l).second);
+    printf("\n");
 
     return 0;
 }
