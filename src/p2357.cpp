@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     int n = 0, m = 0;
     std::vector<long int> inputList;
     std::vector<std::pair<long int, long int>> searchList;
-    std::vector<long int> outputList;
+    std::vector<std::pair<long int, long int>> outputList;
 
     // Input
     scanf("%d %d", &n, &m);
@@ -49,20 +49,37 @@ int main(int argc, char *argv[])
         searchList.push_back(std::pair<long int, long int>(a, b));
     }
     // Sort
-    std::sort(inputList.begin(), inputList.end());
+    // std::sort(inputList.begin(), inputList.end());
 
     // Search
-    
-
+    for (int index = 0; index < m; index++)
+    {
+        long int min = 0, max = 0;
+        for (long int l = searchList.at(index).first - 1; l < searchList.at(index).second; l++)
+        {
+            long int t = inputList.at(l);
+            if (min == 0)
+                min = t;
+            else if (t < min)
+                min = t;
+            if (max == 0)
+                max = t;
+            else if (max < t)
+                max = t;
+        }
+        outputList.push_back(std::pair<long int, long int>(min, max));
+    }
     // Output
 
     // Debug
-    for (int l = 0; l < n; l++)
-        printf("%ld ", inputList.at(l));
-    printf("\n");
+    // for (int l = 0; l < n; l++)
+    //     printf("%ld ", inputList.at(l));
+    // printf("\n");
+    // for (int l = 0; l < m; l++)
+    //     printf("(%ld %ld) ", searchList.at(l).first, searchList.at(l).second);
+    // printf("\n");
     for (int l = 0; l < m; l++)
-        printf("(%ld %ld) ", searchList.at(l).first, searchList.at(l).second);
-    printf("\n");
+        printf("%ld %ld\n", outputList.at(l).first, outputList.at(l).second);
 
     return 0;
 }
