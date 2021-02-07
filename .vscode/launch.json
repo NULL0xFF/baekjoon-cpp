@@ -5,6 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "Launch Java Program",
+            "request": "launch",
+            "mainClass": ""
+        },
+        {
             "name": "Build and Debug Active File (G++)",
             "type": "cppdbg",
             "request": "launch",
@@ -25,5 +31,21 @@
             "preLaunchTask": "Build (G++)",
             "miDebuggerPath": "/usr/bin/gdb"
         }
+        // {
+        //     "name": "Build and Debug Active File (Java)",
+        //     "type": "java",
+        //     "request": "launch",
+        //     "program": "/usr/bin/java",
+        //     "args": [
+        //         "-cp",
+        //         "${workspaceFolder}/bin/",
+        //         "${fileBasenameNoExtension}"
+        //     ],
+        //     "stopAtEntry": false,
+        //     "cwd": "${workspaceFolder}",
+        //     "environment": [],
+        //     "externalConsole": false,
+        //     "preLaunchTask": "Build (Java)"
+        // }
     ]
 }
