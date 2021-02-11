@@ -1,11 +1,83 @@
 #include <cstdio>
 #include <vector>
 #include <set>
+#include <algorithm>
 
-int dijkstra(std::vector<std::pair<int, int>> graph[],
-             int graphSize,
-             int departure,
-             int arrival);
+//int dijkstra(std::vector<std::pair<int, int>> graph[], int graphSize, int departure, int arrival);
+
+/* 
+ * Sudo Code
+ * 
+ function Dijkstra(Graph, source):
+    dist[source] := 0
+    for each vertex v in Graph:
+        if v != source
+            dist[v] := infinity
+        add v to Q
+    
+    while Q is not empty:
+        v := vertex in Q with min dist[v]
+        remove v from Q
+
+        for each neighbor u of v:
+            alt := dist[v] + length(v, u)
+            if alt < dist[u]:
+                dist[u] := alt
+    return dist[]
+end function
+ */
+int dijkstra(std::vector<std::pair<int, int>> graph[], int source)
+{
+    std::vector<std::pair<int, int>> dist;
+    std::set<int> Q;
+    for (auto vertex : graph[source])
+    {
+        /*
+         * vertex.first is arrival city
+         * vertex.second is cost
+         */
+        if (vertex.first != source)
+            dist.push_back(std::make_pair(vertex.first, -1));
+        Q.insert(vertex.first);
+    }
+    int minNode;
+    int minNodeDistance;
+    int altDistance;
+    while (!Q.empty())
+    {
+        minNode = -1;
+        minNodeDistance = -1;
+        for (int node : Q)
+        {
+            auto distNode = std::find_if(dist.begin(),
+                                         dist.end(),
+                                         [&node](const std::pair<int, int> &element) { return element.first == node; });
+            if (minNodeDistance == -1 ||
+                distNode->second < minNodeDistance)
+            {
+                minNode = node;
+                minNodeDistance = distNode->second;
+            }
+        }
+        Q.erase(minNode);
+
+        std::vector<std::pair<int, int>> minNodeMap = graph[minNode];
+        for(auto it : minNodeMap) {
+            if(Q.find(it.first) != Q.end()) {
+                altDistance = minNodeDistance + it.second;
+                auto distNode = std::find_if(dist.begin(),
+                                         dist.end(),
+                                         [&it](const std::pair<int, int> &element) { return element.first == it.first; });
+                if(distNode->second == -1 || altDistance < distNode->second)
+                {
+                    distNode->second = altDistance;
+                }
+
+            }
+        }
+    }
+    return -1;
+}
 
 int main(void)
 {
@@ -39,14 +111,14 @@ int main(void)
     {
         for (int a = 0; a < n; a++)
         {
-            printf("%d ", dijkstra(graph, n, d, a));
+            printf("%d ", dijkstra(graph, d, a));
         }
         printf("\n");
     }
 
     return 0;
 }
-
+/*
 int dijkstra(std::vector<std::pair<int, int>> graph[],
              int graphSize,
              int departure,
@@ -104,3 +176,4 @@ int dijkstra(std::vector<std::pair<int, int>> graph[],
         }
     }
 }
+*/
