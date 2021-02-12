@@ -1,6 +1,33 @@
 #include <cstdio>
 #include <queue>
 
+int sol2(void)
+{
+    int n = 0;
+    int* array = nullptr;
+
+    scanf("%d", &n);
+    array = new int[n * 2]();
+
+    for (int loop = 0; loop < n; loop++)
+        array[loop] = loop + 1;
+
+
+    int frontPtr = 0;
+    int endPtr = n;
+    while (frontPtr + 1 < endPtr)
+    {
+        frontPtr++;
+        array[endPtr] = array[frontPtr];
+        frontPtr++;
+        endPtr++;
+    }
+
+    printf("%d", array[frontPtr]);
+
+    return 0;
+}
+
 int main(void)
 {
     int n = 0;
