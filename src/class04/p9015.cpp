@@ -8,7 +8,7 @@ public:
     Point() {}
 };
 
-void largestSquare(void)
+int largestSquare(void)
 {
     Point *array = nullptr;
     int n = 0;
@@ -24,10 +24,11 @@ void largestSquare(void)
             Point p1 = array[l1], p2 = array[l2], p3, p4;
             int x = p1.x - p2.x;
             int y = p1.y - p2.y;
-            p3.x = (x / 2) + y;
-            p3.y = (y / 2) - x;
-            p4.x = (x / 2) - y;
-            p4.y = (y / 2) + x;
+            p3.x = p1.x + y;
+            p3.y = p1.y - x;
+            p4.x = p2.x + y;
+            p4.y = p2.y - x;
+
             bool p3F = false, p4F = false;
             for (int loop = 0; loop < n; loop++)
                 if (array[loop].x == p3.x && array[loop].y == p3.y)
@@ -42,7 +43,7 @@ void largestSquare(void)
             }
         }
     }
-    return;
+    return maxSize;
 }
 
 int main(void)
@@ -50,6 +51,6 @@ int main(void)
     int t = 0;
     scanf("%d", &t);
     for (int tLoop = 0; tLoop < t; tLoop++)
-        largestSquare();
+        printf("%d\n", largestSquare());
     return 0;
 }
