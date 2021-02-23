@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 
-long long divideCables(std::vector<long long> &cables, int length)
+long long divideCables(std::vector<long long> &cables, long long length)
 {
     long long totalCables = 0;
     for (auto it : cables)
@@ -10,16 +10,16 @@ long long divideCables(std::vector<long long> &cables, int length)
     return totalCables;
 }
 
-long long maxLength(std::vector<long long> &cables, int count, int left, int right)
+long long maxLength(std::vector<long long> &cables, long long left, long long right, long long target)
 {
-    int mid = (left + right) / 2;
-    if (left == mid || mid == right)
-        return mid;
+    if(left > right)
+        return right;
+    long long mid = (left + right) / 2;
     long long midCount = divideCables(cables, mid);
-    if (midCount < count)
-        return maxLength(cables, count, left, mid);
+    if (midCount < target)
+        return maxLength(cables, left, mid - 1, target);
     else
-        return maxLength(cables, count, mid, right);
+        return maxLength(cables, mid + 1, right, target);
 }
 
 int main(void)
@@ -42,6 +42,6 @@ int main(void)
     std::sort(cables.begin(), cables.end());
 
     // Algorithm (Binary Search)
-    printf("%lld\n", maxLength(cables, n, 1, cables.at(0)));
+    printf("%lld\n", maxLength(cables, 1, cables.back(), n));
     return 0;
 }
