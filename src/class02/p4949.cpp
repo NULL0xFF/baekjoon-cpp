@@ -1,17 +1,17 @@
-#include <cstdio>
+#include <iostream>
+#include <string>
 #include <stack>
 
-bool isParenthesisSymmetrical(const char *string)
+bool isParenthesisSymmetrical(const std::string string)
 {
     std::stack<char> parenthesis;
-    int index = 0;
-    while (string[index] != '\0')
+    for (int index = 0; index < string.length(); index++)
     {
-        switch (string[index])
+        switch (string.at(index))
         {
         case '(':
         case '[':
-            parenthesis.push(string[index]);
+            parenthesis.push(string.at(index));
             break;
         case ')':
             if (parenthesis.empty())
@@ -28,27 +28,27 @@ bool isParenthesisSymmetrical(const char *string)
             parenthesis.pop();
             break;
         }
-        index++;
     }
     return parenthesis.empty();
 }
 
 int main(void)
 {
-    char string[101] = "";
+    // Disable IO Stream Sync
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+    std::cout.tie(0);
+
+    std::string inputString;
     while (true)
     {
-        for (int index = 0; index < 100; index++)
-        {
-            string[index] = getchar();
-            if (string[index] == '\n')
-                string[index] = '\0';
-            if (string[index] == '\0')
-                break;
-        }
-        if (string[0] == '.' && string[1] == '\0')
+        std::getline(std::cin, inputString);
+        if (inputString.length() == 1 && inputString.at(0) == '.')
             break;
-        printf("%s\n", isParenthesisSymmetrical(string) ? "yes" : "no");
+        if (isParenthesisSymmetrical(inputString))
+            std::cout << "yes\n";
+        else
+            std::cout << "no\n";
     }
     return 0;
 }
