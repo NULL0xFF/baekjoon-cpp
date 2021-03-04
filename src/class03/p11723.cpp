@@ -1,37 +1,33 @@
 #include <cstdio>
 #include <cstring>
-#include <set>
 
 int main(void)
 {
-    std::set<int> S;
-    int n = 0;
-    scanf("%d", &n);
+    unsigned int S = 0;
+    unsigned int n = 0;
+    scanf("%u", &n);
     {
-        int x = 0;
+        unsigned int x = 0;
         char op[7] = "";
-        for (int loop = 0; loop < n; loop++)
+        for (unsigned int loop = 0; loop < n; loop++)
         {
-            scanf(" %s %d", op, &x);
+            scanf(" %s %u", op, &x);
             if (strcmp(op, "add") == 0)
-                S.insert(x);
+                S |= (1 << x);
             else if (strcmp(op, "remove") == 0)
-                S.erase(x);
+                S &= ~(1 << x);
             else if (strcmp(op, "check") == 0)
-                printf("%d\n", S.find(x) != S.end() ? 1 : 0);
+                printf("%u\n", (S >> x) & 1);
             else if (strcmp(op, "toggle") == 0)
-                if (S.find(x) != S.end())
-                    S.erase(x);
-                else
-                    S.insert(x);
+                S ^= (1 << x);
             else if (strcmp(op, "all") == 0)
             {
-                S.clear();
+                S = 0;
                 for (int i = 1; i <= 20; i++)
-                    S.insert(i);
+                    S |= (1 << i);
             }
             else if (strcmp(op, "empty") == 0)
-                S.clear();
+                S = 0;
         }
     }
     return 0;
