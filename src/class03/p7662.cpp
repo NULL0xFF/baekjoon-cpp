@@ -1,121 +1,96 @@
 #include <cstdio>
-
-class DPriorityQueue
+class Node
 {
 private:
-    class DoubleNode
-    {
-    private:
-        int value = 0;
-        DoubleNode *next = nullptr;
-        DoubleNode *prev = nullptr;
-
-    public:
-        DoubleNode() : DoubleNode(0, nullptr, nullptr) {}
-        DoubleNode(int val) : DoubleNode(val, nullptr, nullptr) {}
-        DoubleNode(int val, DoubleNode *nextPtr) : DoubleNode(val, nextPtr, nullptr) {}
-        DoubleNode(int val, DoubleNode *nextPtr, DoubleNode *prevPtr)
-        {
-            this->value = val;
-            this->next = nextPtr;
-            this->prev = prevPtr;
-        }
-        int getValue(void) { return this->value; }
-        DoubleNode *getNext(void) { return this->next; }
-        DoubleNode *getPrev(void) { return this->prev; }
-        void setValue(int val) { this->value = val; }
-        void setNext(DoubleNode *ptr) { this->next = ptr; }
-        void setPrev(DoubleNode *ptr) { this->prev = ptr; }
-    };
-    DoubleNode *front = nullptr, *end = nullptr;
+    Node *left = nullptr, *right = nullptr;
+    int value = 0;
 
 public:
-    DPriorityQueue() {}
-    void push(int val)
+    Node() : Node(0, nullptr, nullptr) {}
+    Node(int val) : Node(val, nullptr, nullptr) {}
+    Node(int val, Node *leftPtr, Node *rightPtr) : value(val), left(leftPtr), right(rightPtr) {}
+    Node *getLeft(void) { return this->left; }
+    Node *getRight(void) { return this->right; }
+    int getValue(void) { return this->value; }
+    void setLeft(Node *ptr) { this->left = ptr; }
+    void setRight(Node *ptr) { this->right = ptr; }
+    void setValue(int val) { this->value = val; }
+};
+class DoublePriorityQueue
+{
+private:
+    Node *low = nullptr, *high = nullptr;
+
+public:
+    DoublePriorityQueue() {}
+    void push(const int i)
     {
-        if (empty())
+        if (low == nullptr)
         {
-            this->front = new DoubleNode(val);
-            this->end = this->front;
+            low = new Node(i);
+            high = low;
         }
         else
         {
-            this->end->setNext(new DoubleNode(val, nullptr, this->end));
-            this->end = this->end->getNext();
-        }
-    }
-    void pop(int priority)
-    {
-        if (empty())
-            return;
-        else if (priority == 1)
-        {
-            DoubleNode *high = this->getHigh();
-            if (high == this->front)
+            if (i <= low->getValue())
             {
-                this->front = high->getNext();
-                if (this->front == nullptr)
-                    this->end == nullptr;
-                else
-                    this->front->setPrev(nullptr);
+                low->setLeft(new Node(i, nullptr, low));
+                low = low->getLeft();
             }
-            else if (high == this->end)
+            else if (high->getValue() <= i)
             {
-                this->end = this->end->getPrev();
-                this->end->setNext(nullptr);
+                high->setRight(new Node(i, high, nullptr));
+                high = high->getRight();
             }
             else
-                high->getPrev()->setNext(high->getNext());
-            delete (high);
+            {
+                Node *ptr = low, *temp = nullptr;
+                while (ptr != nullptr)
+                {
+                    if (ptr->getValue() <= i && i < ptr->getRight()->getValue())
+                    {
+                        temp = new Node(i, ptr, ptr->getRight());
+                        temp->getRight()->setLeft(temp);
+                        ptr->setRight(temp);
+                        temp = nullptr;
+                        break;
+                    }
+                    ptr = ptr->getRight();
+                }
+            }
+        }
+    }
+    int pop(int priority)
+    {
+        if (empty())
+            return 0;
+        Node *ptr = nullptr;
+        if (high == low)
+        {
+            ptr = high;
+            high = nullptr;
+            low = nullptr;
+        }
+        else if (priority == 1)
+        {
+            ptr = high;
+            high = high->getLeft();
+            high->setRight(nullptr);
         }
         else if (priority == -1)
         {
-            DoubleNode *low = this->getLow();
-            if (low == this->front)
-            {
-                this->front = low->getNext();
-                if (this->front == nullptr)
-                    this->end == nullptr;
-                else
-                    this->front->setPrev(nullptr);
-            }
-            else if (low == this->end)
-            {
-                this->end = this->end->getPrev();
-                this->end->setNext(nullptr);
-            }
-            else
-                low->getPrev()->setNext(low->getNext());
-            delete (low);
+            ptr = low;
+            low = low->getRight();
+            low->setLeft(nullptr);
         }
+        int value = ptr->getValue();
+        delete (ptr);
+        return value;
     }
-    DoubleNode *getHigh(void)
-    {
-        DoubleNode *ptr = this->front;
-        DoubleNode *high = ptr;
-        while (ptr != nullptr)
-        {
-            if (high->getValue() < ptr->getValue())
-                high = ptr;
-            ptr = ptr->getNext();
-        }
-        return high;
-    }
-    DoubleNode *getLow(void)
-    {
-        DoubleNode *ptr = this->front;
-        DoubleNode *low = ptr;
-        while (ptr != nullptr)
-        {
-            if (ptr->getValue() < low->getValue())
-                low = ptr;
-            ptr = ptr->getNext();
-        }
-        return low;
-    }
-    bool empty() { return this->front == nullptr; }
+    bool empty() { return (high == nullptr && low == nullptr); }
+    int top() { return high->getValue(); }
+    int bottom() { return low->getValue(); }
 };
-
 int main(void)
 {
     int t = 0;
@@ -125,7 +100,7 @@ int main(void)
         int k = 0;
         scanf("%d", &k);
         {
-            DPriorityQueue Q;
+            DoublePriorityQueue Q;
             int n = 0;
             char c = '\0';
             for (int loop = 0; loop < k; loop++)
@@ -139,7 +114,7 @@ int main(void)
             if (Q.empty())
                 printf("EMPTY\n");
             else
-                printf("%d %d\n", Q.getHigh()->getValue(), Q.getLow()->getValue());
+                printf("%d %d\n", Q.top(), Q.bottom());
         }
     }
     return 0;
