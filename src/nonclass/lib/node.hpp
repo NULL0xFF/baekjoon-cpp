@@ -1,20 +1,21 @@
 #ifndef NODE_HPP
 #define NODE_HPP
+template <typename Type>
 class Node
 {
 private:
     Node *left = nullptr, *right = nullptr;
-    int value = 0;
+    Type value = 0;
 
 public:
-    Node() : Node(0, nullptr, nullptr) {}
-    Node(int val) : Node(val, nullptr, nullptr) {}
-    Node(int val, Node *leftPtr, Node *rightPtr) : value(val), left(leftPtr), right(rightPtr) {}
+    Node() : Node(nullptr, nullptr, nullptr) {}
+    Node(Type val) : Node(val, nullptr, nullptr) {}
+    Node(Type val, Node *leftPtr, Node *rightPtr) : value(val), left(leftPtr), right(rightPtr) {}
     Node *getLeft(void) { return this->left; }
     Node *getRight(void) { return this->right; }
-    int getValue(void) { return this->value; }
+    Type getValue(void) { return this->value; }
     void setLeft(Node *ptr) { this->left = ptr; }
     void setRight(Node *ptr) { this->right = ptr; }
-    void setValue(int val) { this->value = val; }
+    void setValue(Type val) { this->value = val; }
 };
 #endif // NODE_HPP
