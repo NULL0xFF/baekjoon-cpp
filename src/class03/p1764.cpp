@@ -1,52 +1,31 @@
-#include <cstdio>
-#include <cstring>
+#include <iostream>
 #include <algorithm>
-#include <queue>
-
-bool compare(const char a[], const char b[]) { return strcmp(a, b) < 0; }
-
-bool search(char *array[], int start, int end, char target[])
-{
-    if (start > end)
-        return false;
-    int mid = (start + end) / 2;
-    int flag = strcmp(array[mid], target);
-    if (flag == 0)
-        return true;
-    else if (flag < 0)
-        return search(array, mid + 1, end, target);
-    else
-        return search(array, start, mid - 1, target);
-}
+#include <string>
+#include <vector>
 
 int main(void)
 {
-    char **listen = nullptr, **observe = nullptr;
+    std::vector<std::string> names, searched;
+    std::string s;
     int n = 0, m = 0;
-    scanf("%d %d", &n, &m);
-    listen = new char *[n]();
-    observe = new char *[m]();
-    for (int loop = 0; loop < n; loop++)
+
+    std::cin >> n >> m;
+
+    for (int loop = 0; loop < n + m; loop++)
     {
-        listen[loop] = new char[21]();
-        scanf(" %s", listen[loop]);
+        std::cin >> s;
+        names.push_back(s);
     }
-    for (int loop = 0; loop < m; loop++)
-    {
-        observe[loop] = new char[21]();
-        scanf(" %s", observe[loop]);
-    }
-    std::sort(listen, listen + n, compare);
-    std::sort(observe, observe + m, compare);
-    std::queue<int> searched;
-    for (int index = 0; index < n; index++)
-        if (search(observe, 0, m, listen[index]) == true)
-            searched.push(index);
-    printf("%d\n", searched.size());
-    while (!searched.empty())
-    {
-        printf("%s\n", listen[searched.front()]);
-        searched.pop();
-    }
+    std::sort(names.begin(), names.end());
+    for (int index = 0; index < n + m; index++)
+        if (names[index].compare(names[index + 1]) == 0) // check if names vector has two same values
+        {
+            searched.push_back(names[index]);
+            index++; // skip duplicated entry
+        }
+
+    std::cout << searched.size() << "\n";
+    for (std::string element : searched)
+        std::cout << element << "\n";
     return 0;
 }

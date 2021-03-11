@@ -3,7 +3,7 @@
 
 int main(void)
 {
-    std::map<unsigned int, unsigned int> heap;
+    std::map<unsigned int, unsigned int, std::greater<unsigned int>> heap;
     int n = 0;
     scanf("%d", &n);
     for (int loop = 0; loop < n; loop++)
