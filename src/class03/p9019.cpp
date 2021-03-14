@@ -29,18 +29,40 @@
  * 그러나 R 을 적용하면 0100 이 되므로 결과는 100 이 된다.
  */
 #include <cstdio>
+#include <algorithm>
 #include <vector>
 #include <queue>
+#include <utility>
+typedef std::pair<unsigned int, std::vector<unsigned int>> container;
 unsigned int fnD(const unsigned int n) { return (n * 2) % 10000; }
 unsigned int fnS(const unsigned int n) { return n != 0 ? n - 1 : 9999; }
 unsigned int fnL(const unsigned int n) { return (((n / 100) % 10) * 1000) + (((n / 10) % 10) * 100) + ((n % 10) * 10) + (n / 1000); }
 unsigned int fnR(const unsigned int n) { return ((n % 10) * 1000) + ((n / 1000) * 100) + (((n / 100) % 10) * 10) + ((n / 10) % 10); }
 void dslr(void)
 {
-    unsigned int reg = 0;
     unsigned int a = 0, b = 0;
     scanf("%u %u", &a, &b);
-    
+    // BFS
+    std::vector<unsigned int> visited;
+    std::queue<container> queued;
+    queued.push(std::make_pair(a, std::vector<unsigned int>()));
+    while (!queued.empty())
+    {
+        container reg = queued.front();
+        queued.pop();
+        if (reg.first == b)
+            break;
+        if (std::find(visited.begin(), visited.end(), reg) == visited.end())
+        {
+            visited.push_back(reg.first);
+            queued.push({
+                fnD(reg.first),
+            });
+            queued.push({fnS(reg), std::vector<unsigned int>(reg.second)});
+            queued.push(fnL(reg));
+            queued.push(fnR(reg));
+        }
+    }
     return;
 }
 int main(void)
