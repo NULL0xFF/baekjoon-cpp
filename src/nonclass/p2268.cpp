@@ -1,15 +1,14 @@
 #include <cstdio>
 #include <cmath>
 
-// acmicpc.net/blog/view/9
-int init(int a[], int tree[], int node, int start, int end)
+long long init(long long a[], long long tree[], int node, int start, int end)
 {
     if (start == end)
         return tree[node] = a[start];
     else
         return tree[node] = init(a, tree, node * 2, start, (start + end) / 2) + init(a, tree, node * 2 + 1, (start + end) / 2 + 1, end);
 }
-int sum(const int tree[], int node, int start, int end, int left, int right)
+long long sum(const long long tree[], int node, int start, int end, int left, int right)
 {
     if (left > end || right < start)
         return 0;
@@ -17,7 +16,7 @@ int sum(const int tree[], int node, int start, int end, int left, int right)
         return tree[node];
     return sum(tree, node * 2, start, (start + end) / 2, left, right) + sum(tree, node * 2 + 1, (start + end) / 2 + 1, end, left, right);
 }
-void update(int tree[], int node, int start, int end, int index, int diff)
+void update(long long tree[], int node, int start, int end, int index, int diff)
 {
     if (index < start || index > end)
         return;
@@ -31,24 +30,26 @@ void update(int tree[], int node, int start, int end, int index, int diff)
 
 int main(void)
 {
+    long long *A = nullptr, *tree = nullptr;
     int n = 0, m = 0;
-    scanf("%d %d", &n, &m);
-    int A[n + 1];
-    int tree[(int)(pow(2, (((int)ceil(log2(n))) + 1)))];
-    for (int index = 0; index <= n; index++)
-        A[index] = 0;
-    for (int index = 0; index < (int)(pow(2, (((int)ceil(log2(n))) + 1))); index++)
-        tree[index] = 0;
 
-    // Create Segment Tree
-    init(A, tree, 1, 1, n);
+    scanf("%d %d", &n, &m);
+    A = new long long[n + 1]();
+    tree = new long long[(int)pow(2, ceil(log2(n)) + 1)]();
+
+    init(A, tree, 1, 1, n); // Create Segment Tree
     {
         int c = 0, i = 0, k = 0;
         for (int loop = 0; loop < m; loop++)
         {
             scanf("%d %d %d", &c, &i, &k);
             if (c == 0) // Sum
-                printf("%d", sum(tree, 1, 1, n, i, k));
+            {
+                if (i > k)
+                    printf("%lld\n", sum(tree, 1, 1, n, k, i));
+                else
+                    printf("%lld\n", sum(tree, 1, 1, n, i, k));
+            }
             else if (c == 1) // Modify
             {
                 update(tree, 1, 1, n, i, k - A[i]);
