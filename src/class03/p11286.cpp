@@ -1,13 +1,20 @@
 #include <cstdio>
 #include <cmath>
-#include <algorithm>
-#include <vector>
+#include <map>
 
-bool compare(std::pair<int, int> &a, std::pair<int, int> &b) { return abs(a.first) < abs(b.first); }
+class Element
+{
+public:
+    int num;
+    Element(int x) : num(x) {}
+    bool operator<(const Element &e) const { return abs(num) == abs(e.num) ? num < e.num : abs(num) < abs(e.num); }
+};
+
+bool compare(std::pair<int, int> &a, std::pair<int, int> &b) { return abs(a.first) == abs(b.first) ? a.first < b.first : abs(a.first) < abs(b.first); }
 
 int main(void)
 {
-    std::vector<std::pair<int, int>> heap;
+    std::map<Element, int> heap;
     int n = 0;
     scanf("%d", &n);
     for (int loop = 0; loop < n; loop++)
@@ -18,8 +25,7 @@ int main(void)
         {
             if (!heap.empty())
             {
-                std::sort(heap.begin(), heap.end(), compare);
-                x = heap.begin()->first;
+                x = heap.begin()->first.num;
                 if (heap.begin()->second == 1)
                     heap.erase(heap.begin());
                 else
@@ -29,9 +35,9 @@ int main(void)
         }
         else
         {
-            auto it = std::find_if(heap.begin(), heap.end(), [&x](const std::pair<int, int> &element) { return element.first == x; });
+            auto it = heap.find(x);
             if (it == heap.end())
-                heap.push_back(std::make_pair(x, 1));
+                heap.emplace(Element(x), 1);
             else
                 it->second++;
         }
