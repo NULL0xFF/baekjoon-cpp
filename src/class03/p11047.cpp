@@ -1,24 +1,40 @@
 #include <cstdio>
+#include <iostream>
+#include <algorithm>
+#include <vector>
 
 int main(void)
 {
-    unsigned int *coins = nullptr,
-                 n = 0,
+    unsigned int n = 0,
                  k = 0,
-                 index = 0, count = 0;
+                 count = 0;
+    std::vector<unsigned int> coins;
+
     scanf("%u %u", &n, &k);
-    coins = new unsigned int[n]();
-    for (index = 0; index < n; index++)
-        scanf("%u", &coins[index]);
+
+    for (int index = 0, coin = 0; index < n; index++)
+    {
+        scanf("%u", &coin);
+        coins.push_back(coin);
+    }
+
+    std::sort(coins.begin(), coins.end(), std::less_equal<unsigned int>());
+
+    int offset = coins.size() - 1;
     while (k != 0)
     {
-        if (k / coins[index] > 0)
+        if (k / coins[offset] > 0)
         {
-            count += (k / coins[index]);
-            k %= coins[index];
+            count += (k / coins[offset]);
+            k %= coins[offset];
         }
         else
-            index--;
+        {
+            if (offset == 0)
+                break;
+            else
+                offset--;
+        }
     }
     printf("%u\n", count);
     return 0;
