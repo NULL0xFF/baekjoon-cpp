@@ -1,25 +1,25 @@
-/*
- * 공통
- *  - 첫 단어는 소문자로 되어있는가
- * Java
- *  - 이후 단어는 대문자로 시작하는가
- * C++
- *  - 이후 단어는 소문자이며, _(밑줄)로 시작하는가
- *  - _(밑줄)이 한 개 인가
- */
 #include <cstdio>
 
 int main(void)
 {
+    // Variables
     char string[101] = "";
     char newString[201] = "";
+    int offset = 0, newOffset = 0;
+    bool isCPP = false, isJava = false, capitalize = false, underScore = false;
+
+    // Input
     scanf("%s", string);
-    if (string[0] >= 'A' && string[0] <= 'Z')
+
+    // First Character Check
+    if ((string[0] >= 'A' && string[0] <= 'Z') || string[0] == '_')
+    {
         printf("Error!\n");
-    newString[0] = string[0];
-    int offset = 1;
-    int newStringOffset = 1;
-    bool isJava = false, isCPP = false, capitalize = false;
+        return 0;
+    }
+    newString[newOffset++] = string[offset++];
+
+    // Loop Check
     while (string[offset] != '\0')
     {
         if (string[offset] >= 'A' && string[offset] <= 'Z')
@@ -31,6 +31,7 @@ int main(void)
             }
             else if (isJava == false)
                 isJava = true;
+            capitalize = true;
         }
         else if (string[offset] == '_')
         {
@@ -41,14 +42,34 @@ int main(void)
             }
             else if (isCPP == false)
                 isCPP = true;
-            capitalize = true;
+            if (underScore)
+            {
+                printf("Error!\n");
+                return 0;
+            }
+            else
+                underScore = true;
             offset++;
             continue;
         }
-        newString[newStringOffset++] = capitalize ? string[offset] - ('a' - 'A') : string[offset];
-        capitalize = false;
+        if (capitalize)
+        {
+            newString[newOffset++] = '_';
+            newString[newOffset++] = string[offset] + ('a' - 'A');
+            capitalize = false;
+        }
+        else if (underScore)
+        {
+            newString[newOffset++] = string[offset] - ('a' - 'A');
+            underScore = false;
+        }
+        else
+            newString[newOffset++] = string[offset];
         offset++;
     }
-    printf("%s\n", newString);
+    if (string[offset - 1] == '_')
+        printf("Error!\n");
+    else
+        printf("%s\n", newString);
     return 0;
 }
