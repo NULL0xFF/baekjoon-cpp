@@ -1,75 +1,123 @@
 #include <cstdio>
 #include <queue>
-#include <utility>
 
-typedef struct
+struct Point
 {
-    int x, y, z;
-} Point;
+    int m, n, h, t;
+};
 
 int main(void)
 {
-    std::queue<std::pair<Point, int>> queued;
+    std::queue<Point> ripeTomatoes;
+    int width = 0, length = 0, height = 0;
     int ***tomatoes = nullptr;
-    int breadth = 0, length = 0, height = 0;
-    scanf("%d %d %d", &breadth, &length, &height);
+
+    // Input
+    scanf("%d %d %d", &width, &length, &height);
     tomatoes = new int **[height]();
     for (int h = 0; h < height; h++)
     {
         tomatoes[h] = new int *[length]();
-        for (int n = 0; n < length; n++)
+        for (int l = 0; l < length; l++)
         {
-            tomatoes[h][n] = new int[breadth]();
-            for (int m = 0; m < breadth; m++)
+            tomatoes[h][l] = new int[width]();
+            for (int w = 0; w < width; w++)
             {
-                scanf("%d", &tomatoes[h][n][m]);
-                if (tomatoes[h][n][m] == 1)
-                    queued.push(std::make_pair(Point{m, h, n}, 0));
+                int status = 0;
+                scanf("%d", &status);
+                tomatoes[h][l][w] = status;
+
+                // Remember Riped Tomatoes
+                if (status == 1)
+                {
+                    ripeTomatoes.push(Point{w, l, h, 0});
+                }
             }
         }
     }
-    int time = 0;
-    while (!queued.empty())
-    {
-        Point p = queued.front().first;
-        int t = queued.front().second;
-        queued.pop();
-        if (time < t)
-            time = t;
-        int h = p.y, m = p.x, n = p.z;
-        tomatoes[h][n][m] = 1;
-        h++;
-        if (h < height)
-            if (tomatoes[h][n][m] == 0)
-                queued.push(std::make_pair(Point{m, h, n}, t + 1));
-        h--, n--;
-        if (n >= 0)
-            if (tomatoes[h][n][m] == 0)
-                queued.push(std::make_pair(Point{m, h, n}, t + 1));
-        n++, m++;
-        if (m < breadth)
-            if (tomatoes[h][n][m] == 0)
-                queued.push(std::make_pair(Point{m, h, n}, t + 1));
-        n++, m--;
-        if (n < length)
-            if (tomatoes[h][n][m] == 0)
-                queued.push(std::make_pair(Point{m, h, n}, t + 1));
-        n--, m--;
-        if (m >= 0)
-            if (tomatoes[h][n][m] == 0)
-                queued.push(std::make_pair(Point{m, h, n}, t + 1));
-        m++, h--;
-        if (h >= 0)
-            if (tomatoes[h][n][m] == 0)
-                queued.push(std::make_pair(Point{m, h, n}, t + 1));
-    }
-    bool isRipen = true;
-    for (int h = 0; h < height && isRipen; h++)
-        for (int n = 0; n < length && isRipen; n++)
-            for (int m = 0; m < breadth && isRipen; m++)
-                if (tomatoes[h][n][m] == 0)
-                    isRipen = false;
-    printf("%d\n", isRipen ? time : -1);
 
+    // BFS
+    int maxTime = 0;
+    while (!ripeTomatoes.empty())
+    {
+        Point p = ripeTomatoes.front();
+        ripeTomatoes.pop();
+
+        // Update Time
+        maxTime = p.t > maxTime ? p.t : maxTime;
+
+        // Check Up
+        if ((p.h + 1) < height)
+        {
+            if (tomatoes[p.h + 1][p.n][p.m] == 0)
+            {
+                tomatoes[p.h + 1][p.n][p.m] = 1;
+                ripeTomatoes.push(Point{p.m, p.n, p.h + 1, p.t + 1});
+            }
+        }
+        // Check Down
+        if ((p.h - 1) >= 0)
+        {
+            if (tomatoes[p.h - 1][p.n][p.m] == 0)
+            {
+                tomatoes[p.h - 1][p.n][p.m] = 1;
+                ripeTomatoes.push(Point{p.m, p.n, p.h - 1, p.t + 1});
+            }
+        }
+        // Check North
+        if ((p.n - 1) >= 0)
+        {
+            if (tomatoes[p.h][p.n - 1][p.m] == 0)
+            {
+                tomatoes[p.h][p.n - 1][p.m] = 1;
+                ripeTomatoes.push(Point{p.m, p.n - 1, p.h, p.t + 1});
+            }
+        }
+        // Check South
+        if ((p.n + 1) < length)
+        {
+            if (tomatoes[p.h][p.n + 1][p.m] == 0)
+            {
+                tomatoes[p.h][p.n + 1][p.m] = 1;
+                ripeTomatoes.push(Point{p.m, p.n + 1, p.h, p.t + 1});
+            }
+        }
+        // Check East
+        if ((p.m + 1) < width)
+        {
+            if (tomatoes[p.h][p.n][p.m + 1] == 0)
+            {
+                tomatoes[p.h][p.n][p.m + 1] = 1;
+                ripeTomatoes.push(Point{p.m + 1, p.n, p.h, p.t + 1});
+            }
+        }
+        // Check West
+        if ((p.m - 1) >= 0)
+        {
+            if (tomatoes[p.h][p.n][p.m - 1] == 0)
+            {
+                tomatoes[p.h][p.n][p.m - 1] = 1;
+                ripeTomatoes.push(Point{p.m - 1, p.n, p.h, p.t + 1});
+            }
+        }
+    }
+
+    // Check Raw Tomatoes
+    for (int h = 0; h < height; h++)
+    {
+        for (int l = 0; l < length; l++)
+        {
+            for (int w = 0; w < width; w++)
+            {
+                if (tomatoes[h][l][w] == 0)
+                {
+                    printf("-1\n");
+                    return 0;
+                }
+            }
+        }
+    }
+
+    printf("%d\n", maxTime);
     return 0;
 }
